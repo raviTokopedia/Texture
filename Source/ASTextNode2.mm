@@ -92,7 +92,14 @@ static NSString *ASTextNodeTruncationTokenAttributeName = @"ASTextNodeTruncation
 }
 @dynamic placeholderEnabled;
 
-static NSArray *DefaultLinkAttributeNames = @[ NSLinkAttributeName ];
+static NSArray *DefaultLinkAttributeNames() {
+  static NSArray *names;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    names = @[ NSLinkAttributeName ];
+  });
+  return names;
+}
 
 - (instancetype)init
 {
@@ -113,9 +120,9 @@ static NSArray *DefaultLinkAttributeNames = @[ NSLinkAttributeName ];
     // The common case is for a text node to be non-opaque and blended over some background.
     self.opaque = NO;
     self.backgroundColor = [UIColor clearColor];
-    
-    self.linkAttributeNames = DefaultLinkAttributeNames;
-    
+
+    self.linkAttributeNames = DefaultLinkAttributeNames();
+
     // Accessibility
     self.isAccessibilityElement = YES;
     self.accessibilityTraits = UIAccessibilityTraitStaticText;
