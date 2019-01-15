@@ -63,7 +63,6 @@
 #define ENABLE_NEW_EXIT_HIERARCHY_BEHAVIOR 0
 
 static ASDisplayNodeNonFatalErrorBlock _nonFatalErrorBlock = nil;
-NSInteger const ASDefaultDrawingPriority = ASDefaultTransactionPriority;
 
 // Forward declare CALayerDelegate protocol as the iOS 10 SDK moves CALayerDelegate from an informal delegate to a protocol.
 // We have to forward declare the protocol as this place otherwise it will not compile compiling with an Base SDK < iOS 10
@@ -272,7 +271,7 @@ static ASDisplayNodeMethodOverrides GetASDisplayNodeMethodOverrides(Class c)
   
 
   _contentsScaleForDisplay = ASScreenScale();
-  _drawingPriority = ASDefaultDrawingPriority;
+  _drawingPriority = ASDefaultTransactionPriority;
   
   _primitiveTraitCollection = ASPrimitiveTraitCollectionMakeDefault();
   
