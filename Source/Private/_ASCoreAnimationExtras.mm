@@ -65,42 +65,58 @@ struct _UIContentModeStringLUTEntry {
   NSString *const string;
 };
 
-static const struct _UIContentModeStringLUTEntry UIContentModeCAGravityLUT[] = {
-  {UIViewContentModeScaleToFill,     kCAGravityResize},
-  {UIViewContentModeScaleAspectFit,  kCAGravityResizeAspect},
-  {UIViewContentModeScaleAspectFill, kCAGravityResizeAspectFill},
-  {UIViewContentModeCenter,          kCAGravityCenter},
-  {UIViewContentModeTop,             kCAGravityBottom},
-  {UIViewContentModeBottom,          kCAGravityTop},
-  {UIViewContentModeLeft,            kCAGravityLeft},
-  {UIViewContentModeRight,           kCAGravityRight},
-  {UIViewContentModeTopLeft,         kCAGravityBottomLeft},
-  {UIViewContentModeTopRight,        kCAGravityBottomRight},
-  {UIViewContentModeBottomLeft,      kCAGravityTopLeft},
-  {UIViewContentModeBottomRight,     kCAGravityTopRight},
-};
+static const _UIContentModeStringLUTEntry *UIContentModeCAGravityLUT(size_t *count)
+{
+  // Initialize this in a function (instead of at file level) to avoid
+  // startup initialization time.
+  static const _UIContentModeStringLUTEntry sUIContentModeCAGravityLUT[] = {
+    {UIViewContentModeScaleToFill,     kCAGravityResize},
+    {UIViewContentModeScaleAspectFit,  kCAGravityResizeAspect},
+    {UIViewContentModeScaleAspectFill, kCAGravityResizeAspectFill},
+    {UIViewContentModeCenter,          kCAGravityCenter},
+    {UIViewContentModeTop,             kCAGravityBottom},
+    {UIViewContentModeBottom,          kCAGravityTop},
+    {UIViewContentModeLeft,            kCAGravityLeft},
+    {UIViewContentModeRight,           kCAGravityRight},
+    {UIViewContentModeTopLeft,         kCAGravityBottomLeft},
+    {UIViewContentModeTopRight,        kCAGravityBottomRight},
+    {UIViewContentModeBottomLeft,      kCAGravityTopLeft},
+    {UIViewContentModeBottomRight,     kCAGravityTopRight},
+  };
+  *count = sizeof(sUIContentModeCAGravityLUT) / sizeof(sUIContentModeCAGravityLUT[0]);
+  return sUIContentModeCAGravityLUT;
+}
 
-static const struct _UIContentModeStringLUTEntry UIContentModeDescriptionLUT[] = {
-  {UIViewContentModeScaleToFill,     @"scaleToFill"},
-  {UIViewContentModeScaleAspectFit,  @"aspectFit"},
-  {UIViewContentModeScaleAspectFill, @"aspectFill"},
-  {UIViewContentModeRedraw,          @"redraw"},
-  {UIViewContentModeCenter,          @"center"},
-  {UIViewContentModeTop,             @"top"},
-  {UIViewContentModeBottom,          @"bottom"},
-  {UIViewContentModeLeft,            @"left"},
-  {UIViewContentModeRight,           @"right"},
-  {UIViewContentModeTopLeft,         @"topLeft"},
-  {UIViewContentModeTopRight,        @"topRight"},
-  {UIViewContentModeBottomLeft,      @"bottomLeft"},
-  {UIViewContentModeBottomRight,     @"bottomRight"},
-};
+static const _UIContentModeStringLUTEntry *UIContentModeDescriptionLUT(size_t *count)
+{
+  // Initialize this in a function (instead of at file level) to avoid
+  // startup initialization time.
+  static const _UIContentModeStringLUTEntry sUIContentModeDescriptionLUT[] = {
+    {UIViewContentModeScaleToFill,     @"scaleToFill"},
+    {UIViewContentModeScaleAspectFit,  @"aspectFit"},
+    {UIViewContentModeScaleAspectFill, @"aspectFill"},
+    {UIViewContentModeRedraw,          @"redraw"},
+    {UIViewContentModeCenter,          @"center"},
+    {UIViewContentModeTop,             @"top"},
+    {UIViewContentModeBottom,          @"bottom"},
+    {UIViewContentModeLeft,            @"left"},
+    {UIViewContentModeRight,           @"right"},
+    {UIViewContentModeTopLeft,         @"topLeft"},
+    {UIViewContentModeTopRight,        @"topRight"},
+    {UIViewContentModeBottomLeft,      @"bottomLeft"},
+    {UIViewContentModeBottomRight,     @"bottomRight"},
+  };
+  *count = sizeof(sUIContentModeDescriptionLUT) / sizeof(sUIContentModeDescriptionLUT[0]);
+  return sUIContentModeDescriptionLUT;
+}
 
 NSString *ASDisplayNodeNSStringFromUIContentMode(UIViewContentMode contentMode)
 {
-  for (int i=0; i< ARRAY_COUNT(UIContentModeDescriptionLUT); i++) {
-    if (UIContentModeDescriptionLUT[i].contentMode == contentMode) {
-      return UIContentModeDescriptionLUT[i].string;
+  size_t lutSize;
+  const _UIContentModeStringLUTEntry *lut = UIContentModeDescriptionLUT(&lutSize);
+  for (size_t i = 0; i < lutSize; ++i) {
+    if (lut[i].contentMode == contentMode) {
+      return lut[i].string;
     }
   }
   return [NSString stringWithFormat:@"%d", (int)contentMode];
@@ -108,9 +124,11 @@ NSString *ASDisplayNodeNSStringFromUIContentMode(UIViewContentMode contentMode)
 
 UIViewContentMode ASDisplayNodeUIContentModeFromNSString(NSString *string)
 {
-  for (int i=0; i < ARRAY_COUNT(UIContentModeDescriptionLUT); i++) {
-    if (ASObjectIsEqual(UIContentModeDescriptionLUT[i].string, string)) {
-      return UIContentModeDescriptionLUT[i].contentMode;
+  size_t lutSize;
+  const _UIContentModeStringLUTEntry *lut = UIContentModeDescriptionLUT(&lutSize);
+  for (size_t i = 0; i < lutSize; ++i) {
+    if (ASObjectIsEqual(lut[i].string, string)) {
+      return lut[i].contentMode;
     }
   }
   return UIViewContentModeScaleToFill;
@@ -118,9 +136,11 @@ UIViewContentMode ASDisplayNodeUIContentModeFromNSString(NSString *string)
 
 NSString *const ASDisplayNodeCAContentsGravityFromUIContentMode(UIViewContentMode contentMode)
 {
-  for (int i=0; i < ARRAY_COUNT(UIContentModeCAGravityLUT); i++) {
-    if (UIContentModeCAGravityLUT[i].contentMode == contentMode) {
-      return UIContentModeCAGravityLUT[i].string;
+  size_t lutSize;
+  const _UIContentModeStringLUTEntry *lut = UIContentModeCAGravityLUT(&lutSize);
+  for (size_t i = 0; i < lutSize; ++i) {
+    if (lut[i].contentMode == contentMode) {
+      return lut[i].string;
     }
   }
   ASDisplayNodeCAssert(contentMode == UIViewContentModeRedraw, @"Encountered an unknown contentMode %zd. Is this a new version of iOS?", contentMode);
@@ -140,9 +160,11 @@ UIViewContentMode ASDisplayNodeUIContentModeFromCAContentsGravity(NSString *cons
     return cachedModes[foundCacheIndex];
   }
   
-  for (int i = 0; i < ARRAY_COUNT(UIContentModeCAGravityLUT); i++) {
-    if (ASObjectIsEqual(UIContentModeCAGravityLUT[i].string, contentsGravity)) {
-      UIViewContentMode foundContentMode = UIContentModeCAGravityLUT[i].contentMode;
+    size_t lutSize;
+    const _UIContentModeStringLUTEntry *lut = UIContentModeCAGravityLUT(&lutSize);
+    for (size_t i = 0; i < lutSize; ++i) {
+    if (ASObjectIsEqual(lut[i].string, contentsGravity)) {
+      UIViewContentMode foundContentMode = lut[i].contentMode;
       
       if (currentCacheIndex < ContentModeCacheSize) {
         // Cache the input value.  This is almost always a different pointer than in our LUT and will frequently
