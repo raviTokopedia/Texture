@@ -40,10 +40,23 @@ Pod::Spec.new do |spec|
         'Source/TextKit/*.h',
     ]
   end
+
+#   spec.subspec 'WebP' do |webp|
+#     webp.ios.deployment_target = ios_deployment
+#     webp.tvos.deployment_target = tvos_deployment
+#     webp.osx.deployment_target = osx_deployment
+#     webp.xcconfig = {
+#         'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) PIN_WEBP=1', 
+#         'USER_HEADER_SEARCH_PATHS' => '$(inherited) $(SRCROOT)/libwebp/src'
+#     }
+#     webp.dependency 'PINRemoteImage/Core'
+#     webp.dependency 'libwebp'
+#   end
   
   spec.subspec 'PINRemoteImage' do |pin|
       pin.dependency 'PINRemoteImage/iOS', '= 3.0.0-beta.13'
       pin.dependency 'PINRemoteImage/PINCache'
+      pin.dependency 'PINRemoteImage/WebP'
       pin.dependency 'Texture/Core'
   end
 
